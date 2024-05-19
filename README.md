@@ -1,4 +1,4 @@
-# An OpenGL ES 1.1 framework for rendering [Vertex Colors](https://github.com/vertexcolor).
+## An OpenGL ES 1.1 framework for rendering [Vertex Colors](https://github.com/vertexcolor).
 
 This code will operate on pretty much any device including web browsers using [Emscripten](https://emscripten.org/).
 
