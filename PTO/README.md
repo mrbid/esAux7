@@ -4,4 +4,4 @@
 
 The directory is named high for "higest quality" the concept is that you could then output medium and low quality directories from decimated versions of the original PLY file meshes.
 
-PTO was written by [Test_User](https://notabug.org/test_user) <hax@andrewyu.org>.
+PTO was written by [Test_User](https://notabug.org/test_user) (<hax@andrewyu.org>).
