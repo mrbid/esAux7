@@ -8,51 +8,82 @@
 
 #include "haxstring.h"
 
-int append(int output_fd, char byte, char *was_quoted) {
+// how much to buffer writes, not a limit to sizes
+#define BUFFER_SIZE 4096
+char buffer[BUFFER_SIZE];
+size_t buffer_len = 0;
+
+int output_fd;
+
+int flush_buffer(void) {
+	write(output_fd, buffer, buffer_len);
+	buffer_len = 0;
+
+	return 0;
+}
+
+int append(char byte, char *was_quoted) {
 	switch(byte) {
 	case 0:
 		if (*was_quoted) {
-			WRITES(output_fd, STRING("'"));
+			buffer[buffer_len] = '\'';
+			buffer_len++;
 			*was_quoted = 0;
 		}
-		WRITES(output_fd, STRING(",0"));
+		memcpy(&(buffer[buffer_len]), ",0", 2);
+		buffer_len += 2;
 		break;
-	case '\n':
+	case 0x0A:
 		if (*was_quoted) {
-			WRITES(output_fd, STRING("'"));
+			buffer[buffer_len] = '\'';
+			buffer_len++;
 			*was_quoted = 0;
 		}
-		WRITES(output_fd, STRING(",0Ah"));
+		memcpy(&(buffer[buffer_len]), ",0Ah", 4);
+		buffer_len += 4;
 		break;
-	case '\r':
+	case 0x0D:
 		if (*was_quoted) {
-			WRITES(output_fd, STRING("'"));
+			buffer[buffer_len] = '\'';
+			buffer_len++;
 			*was_quoted = 0;
 		}
-		WRITES(output_fd, STRING(",0Dh"));
+		memcpy(&(buffer[buffer_len]), ",0Dh", 4);
+		buffer_len += 4;
 		break;
 	case 0x1A:
 		if (*was_quoted) {
-			WRITES(output_fd, STRING("'"));
+			buffer[buffer_len] = '\'';
+			buffer_len++;
 			*was_quoted = 0;
 		}
-		WRITES(output_fd, STRING(",1Ah"));
+		memcpy(&(buffer[buffer_len]), ",1Ah", 4);
+		buffer_len += 4;
 		break;
-	case '\'':
+	case 0x27:
 		if (*was_quoted) {
-			WRITES(output_fd, STRING("'"));
+			buffer[buffer_len] = '\'';
+			buffer_len++;
 			*was_quoted = 0;
 		}
-		WRITES(output_fd, STRING(",`'`"));
+		memcpy(&(buffer[buffer_len]), ",27h", 4);
+		buffer_len += 4;
 		break;
 	default:
 		if (!*was_quoted) {
-			WRITES(output_fd, STRING(",'"));
+			buffer[buffer_len] = ',';
+			buffer_len++;
+			buffer[buffer_len] = '\'';
+			buffer_len++;
 			*was_quoted = 1;
 		}
-		write(output_fd, &byte, 1);
+		buffer[buffer_len] = byte;
+		buffer_len++;
 		break;
 	}
+
+	if (buffer_len >= BUFFER_SIZE - 5)
+		flush_buffer();
 
 	return 0; // TODO: return error if one of the writes failed?
 }
@@ -81,7 +112,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	int output_fd = open(writepath, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	output_fd = open(writepath, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (output_fd == -1) {
 		fprintf(stderr, "Cannot write to `%s'.\r\n", writepath);
 		return 1;
@@ -314,16 +345,17 @@ int main(int argc, char **argv) {
 	char was_string = 1;
 	for (size_t i = 0; i < counts[0]; i++) {
 		for (size_t n = 0; n < data_points.x_len; n++)
-			append(output_fd, buffer[offset + n + data_points.x_off], &was_string);
+			append(buffer[offset + n + data_points.x_off], &was_string);
 
 		for (size_t n = 0; n < data_points.y_len; n++)
-			append(output_fd, buffer[offset + n + data_points.y_off], &was_string);
+			append(buffer[offset + n + data_points.y_off], &was_string);
 
 		for (size_t n = 0; n < data_points.z_len; n++)
-			append(output_fd, buffer[offset + n + data_points.z_off], &was_string);
+			append(buffer[offset + n + data_points.z_off], &was_string);
 
 		offset += next;
 	}
+	flush_buffer();
 	if (was_string)
 		WRITES(output_fd, STRING("'"));
 
@@ -339,16 +371,17 @@ int main(int argc, char **argv) {
 	was_string = 1;
 	for (size_t i = 0; i < counts[0]; i++) {
 		for (size_t n = 0; n < data_points.nx_len; n++)
-			append(output_fd, buffer[offset + n + data_points.nx_off], &was_string);
+			append(buffer[offset + n + data_points.nx_off], &was_string);
 
 		for (size_t n = 0; n < data_points.ny_len; n++)
-			append(output_fd, buffer[offset + n + data_points.ny_off], &was_string);
+			append(buffer[offset + n + data_points.ny_off], &was_string);
 
 		for (size_t n = 0; n < data_points.nz_len; n++)
-			append(output_fd, buffer[offset + n + data_points.nz_off], &was_string);
+			append(buffer[offset + n + data_points.nz_off], &was_string);
 
 		offset += next;
 	}
+	flush_buffer();
 	if (was_string)
 		WRITES(output_fd, STRING("'"));
 
@@ -364,16 +397,17 @@ int main(int argc, char **argv) {
 	was_string = 1;
 	for (size_t i = 0; i < counts[0]; i++) {
 		for (size_t n = 0; n < data_points.r_len; n++)
-			append(output_fd, buffer[offset + n + data_points.r_off], &was_string);
+			append(buffer[offset + n + data_points.r_off], &was_string);
 
 		for (size_t n = 0; n < data_points.g_len; n++)
-			append(output_fd, buffer[offset + n + data_points.g_off], &was_string);
+			append(buffer[offset + n + data_points.g_off], &was_string);
 
 		for (size_t n = 0; n < data_points.b_len; n++)
-			append(output_fd, buffer[offset + n + data_points.b_off], &was_string);
+			append(buffer[offset + n + data_points.b_off], &was_string);
 
 		offset += next;
 	}
+	flush_buffer();
 	if (was_string)
 		WRITES(output_fd, STRING("'"));
 
@@ -454,11 +488,12 @@ int main(int argc, char **argv) {
 		offset += indices.list_len;
 		for (size_t x = 0; x < 3; x++) {
 			for (size_t y = 0; y < needed_len; y++)
-				append(output_fd, buffer[offset + y], &was_string);
+				append(buffer[offset + y], &was_string);
 
 			offset += indices.individual_len;
 		}
 	}
+	flush_buffer();
 
 	if (was_string)
 		WRITES(output_fd, STRING("'"));
