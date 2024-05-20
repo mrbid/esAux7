@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: $(patsubst ply/%,high/%,$(patsubst %.ply,%.o,$(wildcard ply/*.ply)))
+all: $(patsubst ply/%.ply,high/%.o,$(wildcard ply/*.ply))
 
 pto: pto.c haxstring.c haxstring.h
 	$(CC) $(CFLAGS) -Ofast pto.c haxstring.c -o pto
