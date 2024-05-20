@@ -1,5 +1,18 @@
-all:
-	cc pto.c haxstring.c -Ofast -march=native -o pto
+.PHONY: all
+
+all: $(patsubst %.ply,%.o,$(wildcard ply/*.ply))
+
+pto: pto.c haxstring.c haxstring.h
+	$(CC) $(CFLAGS) -Ofast pto.c haxstring.c -o pto
+
+ply/%.o: ply/%.asm
+	nasm $< -f elf64 -o $@ && mv -f $(basename $<).o high/$(basename $(notdir $<)).o
+
+ply/%.asm: ply/%.ply pto
+	mkdir -p high && cd $(dir $<) && ../pto $(notdir $<) && cd .. && mv -f $(basename $<).h high/$(basename $(notdir $<)).h
 
 clean:
-	rm -f pto
+	$(RM) ply/*.o ply/*.asm pto
+
+cleanall: clean
+	$(RM) high/*.h
