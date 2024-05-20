@@ -1,15 +1,18 @@
 .PHONY: all
 
-all: $(patsubst ply/%.ply,high/%.o,$(wildcard ply/*.ply))
+all: $(patsubst %.ply,%.o,$(wildcard ply/*.ply)) $(patsubst %.ply,%.h,$(wildcard ply/*.ply))
 
 pto: pto.c haxstring.c haxstring.h
-	$(CC) $(CFLAGS) -Ofast pto.c haxstring.c -o pto
+	$(CC) $(CFLAGS) -Ofast pto.c haxstring.c -o $@
 
-high/%.o: ply/%.asm
-	nasm $< -f elf64 -o $@ && mv -f $(basename $<).o high/$(basename $(notdir $<)).o && $(RM) $(basename $<).asm
+ply/%.o: ply/%.asm
+	nasm $< -f elf64 -o $@
+	$(RM) $<
+	mv -f $(basename $<).h high/$(basename $(notdir $<)).h
+	mv -f $(basename $<).o high/$(basename $(notdir $<)).o
 
-ply/%.asm: ply/%.ply pto
-	mkdir -p high && cd $(dir $<) && ../pto $(notdir $<) && cd .. && mv -f $(basename $<).h high/$(basename $(notdir $<)).h
+ply/%.asm ply/%.h: ply/%.ply pto
+	cd $(dir $<) && ../pto $(notdir $<) && cd ..
 
 clean:
 	$(RM) high/*.o ply/*.asm pto
