@@ -1,11 +1,11 @@
 .PHONY: all
 
-all: $(patsubst %.ply,%.o,$(wildcard ply/*.ply))
+all: $(patsubst ply/%,high/%,$(patsubst %.ply,%.o,$(wildcard ply/*.ply)))
 
 pto: pto.c haxstring.c haxstring.h
 	$(CC) $(CFLAGS) -Ofast pto.c haxstring.c -o pto
 
-ply/%.o: ply/%.asm
+high/%.o: ply/%.asm
 	nasm $< -f elf64 -o $@ && mv -f $(basename $<).o high/$(basename $(notdir $<)).o && $(RM) $(basename $<).asm
 
 ply/%.asm: ply/%.ply pto
