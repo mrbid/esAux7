@@ -15,7 +15,7 @@ ply/%.asm ply/%.h: ply/%.ply pto
 	cd $(dir $<) && ../pto $(notdir $<) && cd ..
 
 clean:
-	$(RM) high/*.o ply/*.asm pto
+	$(RM) pto
 
 cleanall: clean
-	$(RM) high/*.h
+	$(RM) high/*.o high/*.h
