@@ -12,7 +12,7 @@ ply/%.asm: ply/%.ply pto
 	mkdir -p high && cd $(dir $<) && ../pto $(notdir $<) && cd .. && mv -f $(basename $<).h high/$(basename $(notdir $<)).h
 
 clean:
-	$(RM) ply/*.o ply/*.asm pto
+	$(RM) high/*.o ply/*.asm pto
 
 cleanall: clean
 	$(RM) high/*.h
