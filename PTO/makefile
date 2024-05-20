@@ -14,7 +14,7 @@ ply/%.asm high/%.h: ply/%.ply pto
 	mv -f $(basename $<).h high/$(basename $(notdir $<)).h
 
 clean:
-	$(RM) high/*.o ply/*.asm pto
+	$(RM) pto
 
 cleanall: clean
-	$(RM) high/*.h
+	$(RM) high/*.o high/*.h
