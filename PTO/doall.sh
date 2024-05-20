@@ -1,3 +1,4 @@
+cc pto.c haxstring.c -Ofast -march=native -o pto
 mkdir -p high
 for file in ply/*.ply; do
     echo $file
