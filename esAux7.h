@@ -159,6 +159,19 @@ void esDebug(const GLuint state)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, esModelArray[id].iid);
         esBoundModel = id;
     }
+    void esBindModelF(const uint id) // for Fullbright
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].vid);
+        glVertexAttribPointer(position_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(position_id);
+
+        glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].cid);
+        glVertexAttribPointer(color_id, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+        glEnableVertexAttribArray(color_id);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, esModelArray[id].iid);
+        esBoundModel = id;
+    }
     void esRenderModel()
     {
         glDrawElements(GL_TRIANGLES, esModelArray[esBoundModel].ni, esModelArray[esBoundModel].itp, 0);
@@ -173,6 +186,20 @@ void esDebug(const GLuint state)
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].nid);
         glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(normal_id);
+
+        glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].cid);
+        glVertexAttribPointer(color_id, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+        glEnableVertexAttribArray(color_id);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, esModelArray[id].iid);
+
+        glDrawElements(GL_TRIANGLES, esModelArray[id].ni, esModelArray[id].itp, 0);
+    }
+    void esBindRenderF(const uint id) // for Fullbright
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].vid);
+        glVertexAttribPointer(position_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(position_id);
 
         glBindBuffer(GL_ARRAY_BUFFER, esModelArray[id].cid);
         glVertexAttribPointer(color_id, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
