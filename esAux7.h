@@ -9,7 +9,7 @@
     Lambertian fragment shaders make a difference, but only if you normalise the
     vertNorm in the fragment shader. Most of the time you won't notice the difference.
 
-    This focuses on using ML generated models from LUMA GENIE or MESHY.AI
+    This focuses on using ML generated models from LUMA GENIE, MESHY.AI, or TRIPO3D.AI
     converted to vertex colors and shaded via shadeLambert().
     
     No Textures, No Phong, One view-space light with position, ambient and saturation control.
