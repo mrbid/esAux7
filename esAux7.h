@@ -17,8 +17,7 @@
     Default: ambient = 0.648, saturate = 0.26 or 1.0
 
     Requires:
-        - vec.h: https://gist.github.com/mrbid/77a92019e1ab8b86109bf103166bd04e
-        - mat.h: https://gist.github.com/mrbid/cbc69ec9d99b0fda44204975fcbeae7c
+        - matvec.h: https://gist.github.com/mrbid/3ea0c4914017a3051347b1a30f51c9d0
     
     https://registry.khronos.org/OpenGL-Refpages/es1.1/xhtml/
     https://registry.khronos.org/OpenGL/specs/es/2.0/GLSL_ES_Specification_1.00.pdf
