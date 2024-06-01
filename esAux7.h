@@ -15,9 +15,6 @@
     No Textures, No Phong, One view-space light with position, ambient and saturation control.
 
     Default: ambient = 0.648, saturate = 0.26 or 1.0
-
-    Requires:
-        - matvec.h: https://gist.github.com/mrbid/3ea0c4914017a3051347b1a30f51c9d0
     
     https://registry.khronos.org/OpenGL-Refpages/es1.1/xhtml/
     https://registry.khronos.org/OpenGL/specs/es/2.0/GLSL_ES_Specification_1.00.pdf
@@ -30,8 +27,6 @@
 //#define MAX_MODELS 32 // uncomment to enable the use of esBindModel(id) and esRenderModel() or just esBindRender(id)
 //#define GL_DEBUG // allows you to use esDebug(1); to enable OpenGL errors to the console.
                     // https://gen.glad.sh/ and https://glad.dav1d.de/ might help
-
-#include "matvec.h"
 
 // render state id's ~ ( just so you don't need to define them when using shadeLambert() or similar ) ~
 GLint projection_id;
