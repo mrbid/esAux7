@@ -32,8 +32,7 @@
 //#define GL_DEBUG // allows you to use esDebug(1); to enable OpenGL errors to the console.
                     // https://gen.glad.sh/ and https://glad.dav1d.de/ might help
 
-#include "vec.h"
-#include "mat.h"
+#include "matvec.h"
 
 // render state id's ~ ( just so you don't need to define them when using shadeLambert() or similar ) ~
 GLint projection_id;
